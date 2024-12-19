@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model tasks {
+  Id           Int      @id @default(autoincrement())
+  count_calls  Int
+  number_phone String
+  status       Int      @unique
+  info         Json?
+  schedule_id  Int
+  schedule     schedule @relation(fields: [schedule_id], references: [id], onUpdate: Restrict, map: "schedule__tasks.id_fk")
+
+  calls calls[]
+}
+
+model calls {
+  Id_API      Int      @unique
+  task_id     Int
+  phone       String
+  status_id   Int
+  info_result Json?
+  tasks       tasks    @relation(fields: [task_id], references: [status], onUpdate: Restrict, map: "calls__task.id_fk")
+  statuses    statuses @relation(fields: [status_id], references: [statuse_id], onUpdate: Restrict, map: "calls__statuse_id.id_fk")
+}
+
+model statuses {
+  statuse_id   Int    @id @default(autoincrement())
+  name_statuse String
+
+  calls calls[]
+}
+
+model doctors {
+  id       Int        @id @default(autoincrement())
+  name     String     @db.VarChar(255)
+  spec     String     @db.VarChar(255)
+  price    Int
+  schedule schedule[]
+
+  @@index([id, price], map: "doctors_id_price_index")
+}
+
+model patients {
+  id       Int        @id @default(autoincrement())
+  phone    String     @db.VarChar(255)
+  name     String     @db.VarChar(255)
+  email    String     @db.VarChar(255)
+  gender   String     @db.Char(20)
+  schedule schedule[]
+}
+
+model schedule {
+  id         Int       @id @unique(map: "schedule_id_uindex") @default(autoincrement())
+  doctor_id  Int
+  date       DateTime  @db.Date
+  time_from  DateTime  @db.Time(0)
+  time_to    DateTime  @db.Time(0)
+  is_free    Boolean
+  patient_id Int?
+  type       Int?
+  doctors    doctors   @relation(fields: [doctor_id], references: [id], onUpdate: Restrict, map: "schedule__doctors.id_fk")
+  patients   patients? @relation(fields: [patient_id], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "schedule__id_fk")
+
+  @@index([doctor_id], map: "schedule__doctors.id_fk")
+  @@index([patient_id], map: "schedule__id_fk")
+
+  tasks tasks[]
+}
