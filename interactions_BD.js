@@ -49,6 +49,7 @@ class BD {
 
     }
     async get_schedule_doctors(day, doctor_id = null, slot_time = -1){
+        console.log('Start get_schedule_doctors...')
         let error_description = ''
         let sql = this.connection()
         try {
@@ -57,14 +58,20 @@ class BD {
 
             if(rows.length === 0) return 'no date'
             if(doctor_id !== null){
-               result = result.filter(obj => obj.doctor_id === doctor_id)
+                result = rows.filter(obj => obj.doctor_id === doctor_id)
             }
 
             if(slot_time !== -1){
-                const standart = [0, 1]
-                if(!standart.includes(slot_time)) return 'Error: no correct is_free'
+                const standard = [0, 1]
+                if(!standard.includes(slot_time)) return 'Error: no correct is_free'
                 result = result.filter(obj => obj.is_free === slot_time)
             }
+
+            result.map(item => {
+                item.date = new Date(item.date);
+                item.date.setHours(item.date.getHours()+7)
+            })
+            console.log(result)
 
             return result
 
@@ -116,6 +123,24 @@ class BD {
             this.close_connection(sql)
         }
     }
+    async get_count_visit(doctor, patient){
+        let sql =  this.connection()
+        console.log('receive doctor ID into fn: ', doctor)
+        console.log('receive patient ID into fn: ', patient)
+        try{
+            const [rows] = await sql.query(`SELECT doctor_id, COUNT(*) as count_patient FROM schedule WHERE patient_id = ${patient} AND  doctor_id = ${doctor} GROUP BY doctor_id;`);
+            let count = rows.length === 0 ? 0 : rows[0].count_patient
+
+            console.log('From get_count_visit(doctor, patient) return data from schedule: ', count)
+            return count
+        }
+        catch (ERROR) {
+            console.log('from class BD fn get_count_visit()', ERROR)
+        } finally {
+            this.close_connection(sql)
+        }
+    }
+
 }
 
 module.exports = new BD()

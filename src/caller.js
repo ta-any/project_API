@@ -5,33 +5,43 @@ let response = {
     status: true
 }
 
-//  count_calls: 0,
-
-async function caller () {
+exports.protocol =  async function () {
+    console.log('CALLER start...')
     try {
         const tasks = await client.get_collection_('tasks', [{
             status: 1,
         }, {}])
-        const phones = tasks.map(obj => obj.number_phone)
-        console.log(phones)
 
-        tasks.forEach(obj => {
-            client.record_('calls', {
+        // console.log('Return obj whole tasks with status - ready', tasks)
+        // API
+
+        let list_note = tasks.map(obj => {
+            let data = {
                 status_id: 2,
-                phone: obj.number_phone,// ToDo fill date (on) record
-                Id_API: 111, // ToDo change
-                task_id: obj.Id
-            //     phone, id_API_MIA,
-            })
+                phone: obj.number_phone,
+                Id_API: String(Math.floor(Math.random() * 1000)), // ToDo add Id_API
+                task_id: obj.Id,
+
+            }
+            return data
         })
+        // console.log('Return list objects whole tasks with status - ready', list_note)
+        await client.record_('calls', list_note)
 
-        // let note_status = [{status_task: 'ready'}, {status_task: 'process'}]
-        // client.update_('tasks', note_status)
+        for (const index in tasks) {
+            let number = tasks[index].count_calls + 1
+            let id = tasks[index].Id
 
-        response.msg += ' caller() OK!'
+            await client.update_('tasks', [{Id: id}, {
+                count_calls: number,
+                status: 2
+            }])
+        }
+
+        response.msg += ' caller OK!'
 
     } catch (ERROR) {
-        response.msg += " caller() Ne OK"
+        response.msg += " caller Ne OK"
         response.status = false
         console.log(ERROR)
 
@@ -39,11 +49,3 @@ async function caller () {
         console.log(response.msg)
     }
 }
-caller().then(
-    function (result) {
-        return result
-    },
-    function (err) {
-        console.log(response.msg)
-    }
-)

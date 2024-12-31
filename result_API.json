@@ -1,0 +1,46 @@
+{
+  "data": {
+    "296": {
+      "phone_number": "79529252021",
+      "init_time": "2022-04-21 10:19:03",
+      "status": 23,
+      "description": "Окончен по сценарию",
+      "robot_duration": 7,
+      "whisper_duration": 0,
+      "data": {
+        "phone": "79529252021"
+      },
+      "tag": "itistag",
+      "goals": [
+        {
+          "title": "Клиент понял условия оплаты",
+          "id": 196
+        },
+        {
+          "title": "Клиент уже оплатил счёт",
+          "id": 190
+        }
+      ],
+      "attempt": 1,
+      "dialog": [
+        {
+          "type": "human",
+          "text": "Привет МИЯ"
+        },
+        {
+          "type": "robot",
+          "text": "Привет, Евгений!"
+        }
+      ],
+      "variables": {
+        "name": "Евгений"
+      }
+    },
+    "945": {
+      "errors": {
+        "title": "not_called_yet",
+        "details": "Haven't called yet by this call_task_id"
+      }
+    }
+  }
+}

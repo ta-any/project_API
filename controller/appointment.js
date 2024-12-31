@@ -17,11 +17,12 @@ exports.appointment =  async function (req, res) {
 
     try {
         let data =  await sql.get_data_schedule(schedule_id)
+        console.log('Получаемая инфы', data)
         const obj = check.check_(data)
         // error = (obj['status']) ? obj['msg'] : error = obj['msg']
-        console.log(obj)
+        console.log('obj - это объект данных после проверки на возможности записи в таблице schedule', obj)
 
-        const any_parameter = 1
+        let count = await sql.get_count_visit(doctor_id, patient_id)
         let changes = {
             "id" : "id",
             "option_id": schedule_id ,
@@ -30,7 +31,7 @@ exports.appointment =  async function (req, res) {
             "name_is_free" : "is_free",
             "on_ny_is_free": 0,
             "name_type": 'type',
-            "on_ny_type": any_parameter,
+            "on_ny_type": count,
 
         }
 

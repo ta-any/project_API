@@ -9,14 +9,19 @@ class Check {
             msg: ''
         }
 
-        let currentDate = moment().toISOString();
+        let currentDate = moment().zone(0).toISOString();
+        // .toISOString()
         let day = moment(data['date']).format('YYYY-MM-DD')
-        let expected_date = moment(`${day} ${'10:30:00'}`).toISOString()
+        let expected_date = moment(`${day} ${data['time_from']}`).toISOString()
+        console.log('currentDate текущая дата для проверки записи к vрачу ', currentDate)
+        console.log('предпологаемая день записи', day)
+        console.log("предпологаемая time записи", data['time_from'])
+
 
         if(Object.keys(data).length === 0 ) {
             ob['status'] = false
             ob['msg'] = 'BREAKE EXIST'
-        } else if(moment(currentDate).isSameOrBefore(expected_date)){
+        } else if(moment(currentDate).isAfter(expected_date)){
             ob['status'] = false
             ob['msg'] = 'BREAKE DatA'
         } else if( data['is_free'] == 0 ){
@@ -24,7 +29,7 @@ class Check {
             ob['msg'] = 'BREAKE is_free'
             console.log(111)
         } else {
-            ob['msg'] = 'correct'
+            ob['msg'] = 'correct: Record added'
         }
         return ob
     }

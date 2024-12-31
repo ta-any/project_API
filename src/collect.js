@@ -1,12 +1,16 @@
 const { PrismaClient } = require('@prisma/client')
+const client = require("../database");
 const moment = require("moment");
+
 
 const response = {
     msg: "from ..src\\collect.js",
     status: true
 }
 
-async function collect () {
+//Сюда приходят API?
+exports.protocol =  async function () {
+    console.log('COLLECT start...')
     try {
         let tomorrow = moment().zone(0)
             .add(1, 'days').set({'hour': 0, 'minute': 0, 'second': 0, 'millisecond': 0}).format();
@@ -18,33 +22,36 @@ async function collect () {
             patients: true,
         }])
 
-        console.log(array)
+        console.log("Get list task for status - ready: ", array)
 
-        array.forEach(el => {
+        let list_note = array.map(el => {
             const data = {
                 number_phone: el.patients.phone,
                 status: 1,
                 count_calls: 0,
                 schedule_id: el.id,
             }
-
-
-            client.record_('tasks', data)
+            return data
         })
-        response.msg += ' collect()' + ' OK!'
+        console.log('List on record: ', list_note)
+        const lst = await  client.record_('tasks', list_note)
+        response.msg += ' collect' + ' OK!'
     } catch (ERROR) {
-        response.msg += ' collect()' + ' Ne OK!'
+        response.msg += ' collect' + ' Ne OK!'
         response.status = false
         console.log(ERROR)
     } finally {
         console.log(response.msg)
     }
 }
-collect().then(
-    function (result) {
-      return result
-    },
-    function (err) {
-        console.log(response.msg)
-    }
-)
+
+
+
+// collect().then(
+//     function (result) {
+//       return result
+//     },
+//     function (err) {
+//         console.log(response.msg)
+//     }
+// )

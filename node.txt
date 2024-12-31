@@ -1,3 +1,45 @@
+регистрация
+расписание
+
+console.log("Block Запрос в horsResponse()")
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: url: `http://lib.robotmia.ru/hors/get-date.php?text=${date}`,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+function responseData(str){
+
+   const isoFormatData = ''
+}
+
+Проверить запись формата в таблицу (прикрутить) записывать одинаковом формате(!)
+
+ Какой статус пишим если произошла ошибка?
+ Что делать с ошибкой как ее записать? Записывать для нее результат в таблицы?
+
+http://lib.robotmia.ru/hors/get-date.php?text=12 часов
+
+
+        ------------------------------------------------------
+
+     // if (!req.body) {
+     //     console.log(err)
+     //     res.status(500)
+     //     response.msg += " Error Body"
+     //     response.status = false
+     //     res.json(response)
+     //     return
+     // }
+
+     ---------------------------------------------------
+
+
 Blackbox 160
 перезаписать переменные ФИО в глобальную
 v.response.client
@@ -7,9 +49,6 @@ v.response.client
 
 Реплика MIA:103 Ожидание нового запроса 
 
-
-use mysql.destroy() for error()
-- При попытке записаться на несуществующий, прошедший или занятый слот должны возвращаться ошибки
 
 const promise1 = new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -39,105 +78,11 @@ class sql {
 }
 
 
+-------------------------------------------------------------------------
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
----------------------------------------------------------------------------------------------------------
-
-// connection.query("SELECT * FROM doctors",
-//     function(err, results, fields) {
-//         console.log(err);
-//         console.log(results); // собственно данные
-//         console.log(fields); // мета-данные полей
-//     });
-// connection.end();
-
-
-    // add_doctors(name, spec, price){
-    //     let sql =  this.connection()
-    //     const info = sql.execute("INSERT INTO doctors (name, spec, price ) VALUES (?,?,?)", [name, spec, price],
-    //         function(err, data) {
-    //            return data //(?)
-    //     })
-    //
-    //     this.close_connection(sql)
-    //     return info
-    // }
-
-    // app.post("/add_patient", express.json(), function (req, res) {
-    //     if(!req.body) {
-    //         console.log(err)
-    //         res.status(500)
-    //         res.json('Err body')
-    //         return
-    //     }
-    //     // if(!req.body) return res.sendStatus(400);
-    //     const name = req.body.name;
-    //     const phone = req.body.phone;
-    //     const email = req.body.email;
-    //     const gender = req.body.gender;
-    //     connection.query("INSERT INTO patients (name, phone, email, gender ) VALUES (?,?,?,?)",
-    //         [name, phone, email, gender], function(err, data) {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(500)
-    //             res.json('Err bd')
-    //         } else {
-    //             res.json('OK')
-    //         }
-    //         // res.redirect("/");
-    //     });
-    // });
-
-    // app.post("/add_doctor", express.json(), function (req, res) {
-    //     if(!req.body) {
-    //         console.log(err)
-    //         res.status(500)
-    //         res.json('Err body')
-    //         return
-    //     }
-    //     // if(!req.body) return res.sendStatus(400);
-    //     const name = req.body.name;
-    //     const spec = req.body.spec;
-    //     const price = req.body.price;
-    //     connection.query("INSERT INTO doctors (name, spec, price ) VALUES (?,?,?)", [name, spec, price], function(err, data) {
-    //         if(err) {
-    //             console.log(err)
-    //             res.status(500)
-    //             res.json('Err bd')
-    //         } else {
-    //             res.json('OK')
-    //         }
-    //
-    //     });
-    // });
-
----------------------------------------------------------
-
-
+---------------------------------------------------------------------------
 create table doctors
 (
     id    int auto_increment
@@ -178,3 +123,43 @@ create table schedule
     constraint schedule__id_fk
         foreign key (patient_id) references patients (id)
 );
+
+create table statuses
+(
+    statuse_id   int auto_increment
+        primary key,
+    name_statuse varchar(191) not null
+);
+
+create table tasks
+(
+    Id           int auto_increment
+        primary key,
+    count_calls  int          not null,
+    number_phone varchar(191) not null,
+    status       int          not null,
+    info         json         null,
+    schedule_id  int          not null,
+    constraint `schedule__tasks.id_fk`
+        foreign key (schedule_id) references schedule (id),
+    constraint `statuses__tasks.id_fk`
+        foreign key (status) references statuses (statuse_id)
+);
+
+create table calls
+(
+    Id_API      varchar(191) not null,
+    task_id     int          not null,
+    phone       varchar(191) not null,
+    status_id   int          not null,
+    info_result json         null,
+    constraint calls_Id_API_key
+        unique (Id_API),
+    constraint `calls__statuse_id.id_fk`
+        foreign key (status_id) references statuses (statuse_id),
+    constraint `calls__task.id_fk`
+        foreign key (task_id) references tasks (Id)
+);
+
+
+-------------------------------------------------------------------------

@@ -2,13 +2,13 @@ const server = require("../routes/router");
 const sql = require("../interactions_BD");
 
 let response = {
-    msg: 'from ..controller/send_robocall.js',
+    msg: 'from ..controller/find_patient_phone.js',
     status: true
 }
 
 exports.get_find_patient_phone = async function (req, res) {
     if (!req.body) {
-        console.log(err)
+        console.log('find_patient: ')
         res.status(500)
         res.json('Err body')
         return
@@ -32,10 +32,10 @@ exports.get_find_patient_phone = async function (req, res) {
 
 
     try{
-        const formatePhoneNumber = phoneFormat(phone);
-        console.log(formatePhoneNumber)
-        let result = await sql.get_patient(formatePhoneNumber)
-        response.answer = result
+        const FPN = phoneFormat(phone);
+        console.log('find_patient', new Date(), FPN)
+        let result_get_patient = await sql.get_patient(FPN)
+        response.answer = result_get_patient
     }
     catch (ERROR) {
         response = "Ne OK: from find_patient_phone.js"

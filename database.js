@@ -33,14 +33,15 @@ class database {
 
     }
 
-    async record_(to, note){
+    async record_(to, list_note){
         const client = new PrismaClient()
         await client.$connect()
         try {
-            const create_note = await client[to].create({
-                data: note
+            console.log('Start record Create_note')
+            const create_note = await client[to].createMany({
+                data: list_note,
             })
-
+            console.log('Create_note: ', create_note)
             response.msg += ' record_() OK! record!'
         } catch(ERROR) {
             console.log(ERROR)
@@ -57,14 +58,11 @@ class database {
         await client.$connect()
         const [change, update] = note
         try {
-            const result = await client[to].update({
-                where: {
-                    change
-                },
-                data: {
-                    update
-                }
+            const result = await client[to].updateMany({
+                where: change,
+                data: update
             })
+            console.log(`Change in ${to} table, option ${note}`)
 
             response.msg += ' update_() OK! update info!'
         } catch(ERROR) {
@@ -76,7 +74,6 @@ class database {
             console.log(response.msg)
         }
     }
-
 }
 
 module.exports = new database()
