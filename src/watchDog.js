@@ -48,7 +48,7 @@ const client = require("../database");
 const { PrismaClient } = require('@prisma/client');
 
 let response = {
-    msg: 'from ..src\\watchDog.js',
+    msg: '',
     status: true
 }
 
@@ -104,10 +104,10 @@ exports.protocol =  async function () {
                 // let updatedTask = await client.update_('tasks', [{Id: lst_calls[index].tasks.Id}, data_for_update_tasks])
             }
         }
-        response.msg += " watchDog OK!"
+        response.msg = "from ..src\\watchDog.js: watchDog - OK!"
 
     } catch (ERROR) {
-        response.msg += " watchDog Ne OK"
+        response.msg = "from ..src\\watchDog.js: watchDog - Ne OK"
         response.status = false
         console.log(ERROR)
 

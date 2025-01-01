@@ -1,10 +1,8 @@
 const { PrismaClient } = require('@prisma/client')
 const client = require("../database");
 const moment = require("moment");
-
-
 const response = {
-    msg: "from ..src\\collect.js",
+    msg: "",
     status: true
 }
 
@@ -25,19 +23,19 @@ exports.protocol =  async function () {
         console.log("Get list task for status - ready: ", array)
 
         let list_note = array.map(el => {
-            const data = {
+            return  {
                 number_phone: el.patients.phone,
                 status: 1,
                 count_calls: 0,
                 schedule_id: el.id,
             }
-            return data
+            // return data
         })
         console.log('List on record: ', list_note)
         const lst = await  client.record_('tasks', list_note)
-        response.msg += ' collect' + ' OK!'
+        response.msg = 'from ..src\\collect.js: collect - OK!'
     } catch (ERROR) {
-        response.msg += ' collect' + ' Ne OK!'
+        response.msg = 'from ..src\\collect.js: collect - Ne OK!'
         response.status = false
         console.log(ERROR)
     } finally {

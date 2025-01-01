@@ -16,14 +16,13 @@ exports.protocol =  async function () {
         // API
 
         let list_note = tasks.map(obj => {
-            let data = {
+            return {
                 status_id: 2,
                 phone: obj.number_phone,
                 Id_API: String(Math.floor(Math.random() * 1000)), // ToDo add Id_API
                 task_id: obj.Id,
-
             }
-            return data
+            // return data - obj
         })
         // console.log('Return list objects whole tasks with status - ready', list_note)
         await client.record_('calls', list_note)
@@ -38,10 +37,10 @@ exports.protocol =  async function () {
             }])
         }
 
-        response.msg += ' caller OK!'
+        response.msg = 'from ..src\\caller.js: caller - OK!'
 
     } catch (ERROR) {
-        response.msg += " caller Ne OK"
+        response.msg = "from ..src\\caller.js: caller - Ne OK"
         response.status = false
         console.log(ERROR)
 

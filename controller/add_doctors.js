@@ -1,6 +1,11 @@
 const server = require("../routes/router");
 const sql = require("../interactions_BD");
 
+let response = {
+    msg: '',
+    status: true
+}
+
 exports.add_doctors = async function (req, res){
     if(!req.body) {
         console.log(err)
@@ -15,12 +20,14 @@ exports.add_doctors = async function (req, res){
     let tmp = ''
     try {
         await sql.add_('doctors', req.body)
-        tmp = 'OK'
-    } catch(err) {
-        console.log(err)
-        tmp = 'Error'
+
+        response.msg = "from ..controller\\add_doctors.js - OK"
+    } catch(ERROR) {
+        response.status = false
+        response.msg = "from ..controller\\add_doctor.js - Ne OK"
+        console.log(ERROR)
     } finally {
-        res.json(tmp)
+        res.json(response)
     }
 }
 

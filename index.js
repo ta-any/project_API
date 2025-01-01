@@ -8,6 +8,11 @@ app.use(express.json())
 const server = require("./routes/router.js");
 app.use("/server", server);
 
+app.use((err, req, res, next) => {
+    console.error('Ошибка:', err);
+    res.status(500).send('Что-то сломалось!');
+});
+
 app.listen(PORT, function (err) {
     if (err) throw err;
     console.log("Server listening on PORT", PORT);
@@ -29,5 +34,8 @@ const watchDog = require('./src/watchDog')
 // cron.schedule('40 0-59 * * * *', function() {
 //     watchDog.protocol()
 // });
+
+// Middleware для обработки ошибок
+
 
 

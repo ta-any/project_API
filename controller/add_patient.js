@@ -21,7 +21,7 @@ exports.add_patient = async function (req, res) {
     const phone = req.body.phone;
     const email = req.body.email;
     const gender = req.body.gender;
-    console.log('start add')
+    // console.log('start add_patient')
 
     let tmp = ''
     try {
@@ -37,6 +37,7 @@ exports.add_patient = async function (req, res) {
         console.log(err)
         tmp = 'add patient Error'
     } finally {
+        // ToDo Where using response OK fn add_patient()
         res.json(tmp)
     }
 

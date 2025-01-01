@@ -46,6 +46,7 @@ exports.appointment =  async function (req, res) {
         error = 'Ne OK'
         console.log(Error)
     } finally {
+        // ToDo Why response error???
         res.json(error)
     }
 }

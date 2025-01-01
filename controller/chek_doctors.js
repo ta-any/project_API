@@ -1,7 +1,7 @@
 const server = require("../routes/router");
 const sql = require("../database");
 let response = {
-    msg: 'from ..src\\check_doctors.js',
+    msg: '',
     status: true
 }
 
@@ -29,10 +29,10 @@ exports.check_doctors_name =  async function (req, res) {
             response.haveDoc = true
             response.info_doctor = info_doctor
         }
-        response.msg += ' check_doctors OK!'
+        response.msg = 'from ..controller\\check_doctors.js - OK!'
 
     } catch (ERROR) {
-        response.msg += " check_doctors Ne OK"
+        response.msg = "from ..controller\\check_doctors.js - Ne OK!"
         response.status = false
         console.log(ERROR)
 

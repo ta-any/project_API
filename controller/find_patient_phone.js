@@ -2,7 +2,7 @@ const server = require("../routes/router");
 const sql = require("../interactions_BD");
 
 let response = {
-    msg: 'from ..controller/find_patient_phone.js',
+    msg: '',
     status: true
 }
 
@@ -16,6 +16,7 @@ exports.get_find_patient_phone = async function (req, res) {
 
     const phone = req.body.phone;
 
+    // ToDo relocate fn phoneFormat to module check_data
     const phoneFormat = (s, plus = true) => {
         const startsWith = plus ? '+7' : '8';
 
@@ -34,11 +35,12 @@ exports.get_find_patient_phone = async function (req, res) {
     try{
         const FPN = phoneFormat(phone);
         console.log('find_patient', new Date(), FPN)
-        let result_get_patient = await sql.get_patient(FPN)
-        response.answer = result_get_patient
+
+        response.answer = await sql.get_patient(FPN)
+        response.msg = "from ..controller/find_patient_phone.js - OK!"
     }
-    catch (ERROR) {
-        response = "Ne OK: from find_patient_phone.js"
+    catch(ERROR) {
+        response.msg = "from ..controller/find_patient_phone.js - Ne OK!"
         console.log(ERROR)
     } finally {
         res.json(response)
