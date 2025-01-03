@@ -1,4 +1,5 @@
 // v.servey add global v construction
+// блок вернет в v.servey v.servey.recordTime
 
 const axios = require('axios');
 console.log("Start block Принимаем время от клиента")
