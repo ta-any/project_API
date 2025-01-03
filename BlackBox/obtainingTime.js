@@ -1,5 +1,8 @@
+// v.servey add global v construction
+
 const axios = require('axios');
 console.log("Start block Принимаем время от клиента")
+// v.servey.slotsFreeTime провеить массив перед записью наа аопределенную дату-время
 // уточнить свободно ли это место для записи, не ошибся ли клиент (НЕТ)
 // переменная  finallyFree
 
@@ -29,8 +32,6 @@ async function responseTimeFormatISO(queryDate){
         const object = JSON.parse(responseJSON.data.horsResponse);
         let D = new Date(object.DateFrom)
         let desiredTime = D.toLocaleTimeString()
-
-
 
     })
         .catch((error) => {

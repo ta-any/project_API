@@ -16,7 +16,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, function (err) {
     if (err) throw err;
     console.log("Server listening on PORT", PORT);
-    // console.log(`http://localhost:${PORT}/server/appointment`)
+    console.log(`http://localhost:${PORT}/server/`)
 })
 
 const collect = require('./src/collect');

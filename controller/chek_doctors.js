@@ -24,6 +24,8 @@ exports.check_doctors_name =  async function (req, res) {
             response.haveDoc = false
             console.log('no haveDoc')
         } else {
+            // WHY FILTER? 0_o
+            // А какой был план, а?
             let info_doctor = lst_doctors.filter(doctor => doctor.id = doctor_id)
             console.log('haveDoc')
             response.haveDoc = true

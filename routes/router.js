@@ -8,7 +8,8 @@ const ADD_appointment = require("../controller/appointment.js");
 const GET_appointment = require("../controller/get_appointment.js")
 const GET_patient_id =  require("../controller/find_patient_phone.js")
 const SEND_call =  require("../controller/send_robocall.js")
-const CHECK_doctors = require("../controller/chek_doctors.js")
+// const CHECK_doctors = require("../controller/chek_doctors.js")
+const IS_personalityDoc = require('../controller/isPersonalityDoc.js')
 
 router.get('/about', (req, res) => {
     res.send("Tst")
@@ -20,7 +21,8 @@ router.post("/appointment", ADD_appointment.appointment);
 router.post("/get_appointment", GET_appointment.get_appointment);
 router.post("/find_patient_phone", GET_patient_id.get_find_patient_phone);
 router.post("/robocall", SEND_call.send); // ToDo change name(?)
-router.post('/check_doctors', CHECK_doctors.check_doctors_name )
+// router.post('/check_doctors', CHECK_doctors.check_doctors_name )
+router.post('/is_personalityDoc', IS_personalityDoc.check)
 
 
 router.get('/about', (req, res) => {

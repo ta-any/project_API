@@ -8,7 +8,8 @@
 
 const server = require("../routes/router");
 const sql = require("../interactions_BD");
-const have_patient = require("./find_patient_phone");
+// const have_patient = require("./find_patient_phone");
+// ToDo сделать шаблонный массив возвращающейся инфы клиенту
 
 exports.add_patient = async function (req, res) {
     if(!req.body) {
@@ -30,6 +31,7 @@ exports.add_patient = async function (req, res) {
         // if(h_phone.answer.length === 0){
         //     console.log('Empty')
         // }
+        // ToDo переписать тело для отправке данных, приведя номер телефона к сообветсвующему формату
         await sql.add_('patients', req.body)
         console.log('Line next fn add_')
         tmp = 'OK'

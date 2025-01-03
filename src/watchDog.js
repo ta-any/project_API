@@ -106,7 +106,7 @@ exports.protocol =  async function () {
         }
         response.msg = "from ..src\\watchDog.js: watchDog - OK!"
 
-    } catch (ERROR) {
+    } catch(ERROR) {
         response.msg = "from ..src\\watchDog.js: watchDog - Ne OK"
         response.status = false
         console.log(ERROR)

@@ -1,5 +1,6 @@
 регистрация
 расписание
+смотритель
 
 console.log("Block Запрос в horsResponse()")
 
