@@ -1,7 +1,7 @@
 const client = require("../database");
 const { PrismaClient } = require('@prisma/client')
 let response = {
-    msg: 'from ..src\\caller.js',
+    msg: '',
     status: true
 }
 

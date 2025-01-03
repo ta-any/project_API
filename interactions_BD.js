@@ -1,5 +1,5 @@
 const mysql = require("mysql2/promise");
-const check = require("./check_data");
+const check = require("./inside_methods/checker");
 
 class BD {
     constructor() {

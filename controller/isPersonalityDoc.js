@@ -1,6 +1,6 @@
 const server = require("../routes/router");
 const sql = require("../database");
-// const {is} = require("prisma/build/child");
+
 let response = {
     msg: '',
     status: true

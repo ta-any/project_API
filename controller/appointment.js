@@ -1,7 +1,12 @@
 const server = require("../routes/router");
 const sql = require("../interactions_BD");
-const check = require("../check_data");
+const checker = require("../inside_methods/checker");
+let response = {
+    msg: '',
+    status: true
+}
 
+// method record slot on table schedule
 exports.appointment =  async function (req, res) {
     if (!req.body) {
         console.log(err)
@@ -13,14 +18,13 @@ exports.appointment =  async function (req, res) {
     const patient_id = req.body.patient_id;
     const doctor_id = req.body.doctor_id;
     const schedule_id = req.body.schedule_id;
-    let error = ''
 
     try {
         let data =  await sql.get_data_schedule(schedule_id)
-        console.log('Получаемая инфы', data)
-        const obj = check.check_(data)
-        // error = (obj['status']) ? obj['msg'] : error = obj['msg']
-        console.log('obj - это объект данных после проверки на возможности записи в таблице schedule', obj)
+        // console.log('Получаемая инфы о слоте по id', data)
+        const obj = checker.slotSchedule(data)
+        // console.log('obj - это объект данных после проверки на возможности записи в таблице schedule')
+        // console.log(obj)
 
         let count = await sql.get_count_visit(doctor_id, patient_id)
         let changes = {
@@ -32,21 +36,23 @@ exports.appointment =  async function (req, res) {
             "on_ny_is_free": 0,
             "name_type": 'type',
             "on_ny_type": count,
-
         }
 
         if(obj['status']){
-            error = obj['msg']
+            response.status = obj['status']
+            response.resultRecord = obj['msg']
             sql.update_('schedule', changes)
         } else {
-            error = obj['msg']
+            response.reasonForRefusalRecord = obj['msg']
+            response.status = obj['status']
         }
+        response.msg = "from ..controller\\appointment.js - OK"
 
-    } catch (Error) {
-        error = 'Ne OK'
-        console.log(Error)
+    } catch (ERROR) {
+        response.msg = "from ..controller\\appointment.js - Ne OK"
+        response.status = false
+        console.log(ERROR)
     } finally {
-        // ToDo Why response error???
-        res.json(error)
+        res.json(response)
     }
 }

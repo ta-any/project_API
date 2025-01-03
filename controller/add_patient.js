@@ -8,8 +8,12 @@
 
 const server = require("../routes/router");
 const sql = require("../interactions_BD");
-// const have_patient = require("./find_patient_phone");
-// ToDo сделать шаблонный массив возвращающейся инфы клиенту
+const format = require("../inside_methods/format");
+
+let response = {
+    msg: '',
+    status: true
+}
 
 exports.add_patient = async function (req, res) {
     if(!req.body) {
@@ -18,29 +22,23 @@ exports.add_patient = async function (req, res) {
         res.json('Err body')
         return
     }
-    const name = req.body.name;
-    const phone = req.body.phone;
-    const email = req.body.email;
-    const gender = req.body.gender;
+    let tmpObj = {}
+    tmpObj.name = req.body.name;
+    tmpObj.phone = format.phone(req.body.phone);
+    tmpObj.email = req.body.email;
+    tmpObj.gender = req.body.gender;
     // console.log('start add_patient')
 
-    let tmp = ''
     try {
-        // const h_phone = await have_patient.get_find_patient_phone(phone)
-        // console.log(h_phone.answer)
-        // if(h_phone.answer.length === 0){
-        //     console.log('Empty')
-        // }
-        // ToDo переписать тело для отправке данных, приведя номер телефона к сообветсвующему формату
-        await sql.add_('patients', req.body)
-        console.log('Line next fn add_')
-        tmp = 'OK'
-    } catch(err) {
-        console.log(err)
-        tmp = 'add patient Error'
-    } finally {
-        // ToDo Where using response OK fn add_patient()
-        res.json(tmp)
-    }
+        await sql.add_('patients', tmpObj)
+        // console.log('Line next fn sql.add_("patients", tmpObj)')
 
+        response.msg = "from ..controller\\add_patient.js - OK"
+    } catch(ERROR) {
+        console.log(ERROR)
+        response.status = false
+        response.msg = "from ..controller\\add_patient.js - Ne OK"
+    } finally {
+        res.json(response)
+    }
 };
