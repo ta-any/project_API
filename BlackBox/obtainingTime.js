@@ -3,7 +3,7 @@
 
 const axios = require('axios');
 console.log("Start block Принимаем время от клиента")
-// v.servey.slotsFreeTime провеить массив перед записью наа аопределенную дату-время
+// v.servey.slotsFreeTime проверить массив перед записью на определенную время
 // уточнить свободно ли это место для записи, не ошибся ли клиент (НЕТ)
 // переменная  finallyFree
 
@@ -31,8 +31,10 @@ async function responseTimeFormatISO(queryDate){
     return await axios.request(config).then((responseJSON) => {
         console.log('ответ API lib.robotmia about time: ', responseJSON)
         const object = JSON.parse(responseJSON.data.horsResponse);
-        let D = new Date(object.DateFrom)
-        let desiredTime = D.toLocaleTimeString()
+        // let D = new Date(object.Dates.DateFrom)
+        // let desiredTime = D.toLocaleTimeString()
+        let desiredTime = object.Dates.DateFrom.split('T')[1].split('T')[1] //.slice(0, -3)
+        // v.servey.recordTime = object.Dates.DateFrom.split('T')[1].split('T')[1].slice(0, -3)
 
     })
         .catch((error) => {

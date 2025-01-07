@@ -1,6 +1,9 @@
 const axios = require('axios');
 console.log('Block free slots time')
 
+// Использовать глобальную функцию для фильтрации массива со всем уже принятым
+// расписанием, на которое уже полученно из API
+
 // v.servey.info_doctors
 // v.servey.haveDoc = true
 // v.servey.scheduleLST

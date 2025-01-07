@@ -17,12 +17,12 @@ let api = {
 
 }
 
-// if(v.intent.entity_search != null && v.intent.entity_search.length !== 0){
-//     console.log('Спутник, что-то нашел...')
-//     essence = v.intent.entity_search.find(elem => elem.Entity_id === essenceNumber && elem.FullMatch > 0)
-//     console.log('Our medicalSpecialty intent: ')
-//     console.log(essence)
-// }
+if(v.intent.entity_search != null && v.intent.entity_search.length !== 0){
+    console.log('Спутник, что-то нашел...')
+    essence = v.intent.entity_search.find(elem => elem.Entity_id === essenceNumber && elem.FullMatch > 0)
+    console.log('Our medicalSpecialty intent: ')
+    console.log(essence)
+}
 
 // inspection(инспекция) essence
 // print error...
