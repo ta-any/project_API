@@ -91,15 +91,28 @@ function getAllDateVariants(isoDate) {
         }
     }
 
-    return result.filter(data => data !== isoDate)
+    return result.filter(data => new Date(data)  !== isoDate)
 }
-servey.allDateVariants = getAllDateVariants(servey.date)
-console.log('Lst allDateVariants +- 3day', servey.allDateVariants)
 
-// расширить функцию, есть докотр(возможно все еще массив докторов по специалитету)
-async function walkingForFreeSlotTimeFromAPI(date){
+
+async function startSearch() {
+    console.log('Start startSearch()')
+    v.servey.allDateVariants = getAllDateVariants(v.servey.date)
+    console.log('Lst allDateVariants +- 3day', v.servey.allDateVariants)
+
+    for(let day of  v.servey.allDateVariants){
+        await extendedSearch(day)
+        if(v.isDate){
+            break
+        }
+    }
+
+}
+
+
+async function walkingForFreeSlotTimeFromAPI(dayFullFormat){
     let localDataset = {
-        data: date,
+        data: dayFullFormat, // example "2024-12-25T00:00:00"
         is_free: 1,
         doctor_id: servey.info_doctors.id,
     };
@@ -117,38 +130,36 @@ async function walkingForFreeSlotTimeFromAPI(date){
 
     return await axios.request(config).then((response) => {
         console.log('From walkingForFreeSlotTimeFromAPI response: ', response.data)
-        // Перезапишит есть ли дата или нет
+        // Перезапишит есть ли расписание на дату или нет
         if(response.data.answer === 'no date'){
-            v.is_date = false
+            v.isDate = false
         } else {
-            v.is_date = true
+            v.isDate = true
             v.servey.schedule = response.data.answer
         }
     })
 }
 
-async function extendedSearch(){
+async function extendedSearch(day){
     let verifiedDate = null;
-    if('cashDate' in servey){
-        servey.allDateVariants.forEach(value => {
-            if (!servey.cashDate.includes(value) && verifiedDate === null) {
-                verifiedDate = value;
-            }
-        });
-        if(verifiedDate !== null) servey.cashDate.push(verifiedDate)
-        // console.log('next: ', verifiedDate)
+    if('cashDate' in v.servey){
+        if(!servey.cashDate.includes(day)){
+            verifiedDate = day
+            if(verifiedDate !== null) v.servey.cashDate.push(verifiedDate)
+        }
     } else {
-        verifiedDate = servey.allDateVariants[0]
-        servey.cashDate = [verifiedDate]
+        verifiedDate = day
+        v.servey.cashDate = [ verifiedDate ]
     }
-    //Обновляем на конструкторе текущую дату для звписи клиента
+
+    //Обновляем на конструкторе текущую дату для записи клиента
     v.servey.date = verifiedDate
+
     console.log('Отправка verifiedDate на поиск свободных слотов: ', verifiedDate)
     await walkingForFreeSlotTimeFromAPI(verifiedDate)
-
 }
 
-await extendedSearch().catch((error) => {
+await startSearch().catch((error) => {
     v.is_error = true
     console.log("ERROR block расширинный поиск даты со свободными слотами: ", error);
 }).finally(finish)

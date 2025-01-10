@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const express = require('express')
 const app = express()
-const PORT = 3030
+const PORT = 8080
 
 app.use(express.json())
 

@@ -1,64 +1,95 @@
-// Essence specialty Doc for SPUTNYC
-// Check content essence or return error
-// Find first doctor with free time-date
-// Speaker
+console.log(111)
+const v = {}
+v.servey = {
+    info_doctors: { id: 4, name: 'Громов', spec: 'Терапевт', price: 3500 },
+    isDoc: true,
+}
+v.servey.date = '2025-01-24T00:00:00'
 
-// v.servey add global v construction
+//////////////////////////////////////////////////////////////////////////
+const dayjs = require('dayjs')
+const axios = require('axios');
 
-console.log('Фиксируем специальность врача...')
-// const essenceNumber = 509
-// const axios = require('axios');
-// let essence
-let essence = {
-    NormalPhrase: 'терапевт'
+console.log("Start block Расширинный поиск даты со свободными слотами")
+
+async function startSearch(){
+    console.log('Start startSearch()')
+
+    v.servey.allDaysVariants = getAllDateVariants(v.servey.date)
+    console.log('Lst allDaysVariants +- 3day', v.servey.allDaysVariants)
+
+    for(let day of v.servey.allDaysVariants){
+        if(!('cashDate' in v.servey)){
+            console.log('Nope')
+            v.servey.cashDate = []
+        } else {
+             console.log('Отправка day на поиск свободных слотов: ', day)
+             const slots = await walkingForFreeSlotTimeFromAPI(day)
+             v.servey.cashDate.push(day)
+                if(v.servey.schedule.length != 0 ) {
+                    console.log("Filled list free time: ", v.servey.schedule)
+                    v.servey.date = day
+                    break
+                }
+        }
+    }
+
 }
 
-let api = {
 
+function getAllDateVariants(isoDate) {
+    if (dayjs().isAfter(dayjs(v.servey.date))) return []
+    const result = [];
+
+    for (let i = -3; i <= 3; i++) {
+        const adjustedDate = new Date(isoDate);
+        adjustedDate.setDate(adjustedDate.getDate() + i);
+        if (!dayjs(adjustedDate).isSame(dayjs(v.servey.date))) result.push(adjustedDate);
+    }
+    // console.log("List on day: ", result)
+    return  result
 }
 
-if(v.intent.entity_search != null && v.intent.entity_search.length !== 0){
-    console.log('Спутник, что-то нашел...')
-    essence = v.intent.entity_search.find(elem => elem.Entity_id === essenceNumber && elem.FullMatch > 0)
-    console.log('Our medicalSpecialty intent: ')
-    console.log(essence)
+async function walkingForFreeSlotTimeFromAPI(dayFullFormat){
+    // Вернют или  v.isDate = false при неудачи и отсутствии свободных слотов на dayFullFormat
+    // Или массив слотов свободного времени для конкретного врача и конкретную дату(dayFullFormat)
+    // v.isDate = true
+    // v.servey.schedule = response.data.answer
+
+    let localDataset = {
+        data: dayFullFormat, // example "2024-12-25T00:00:00"
+        is_free: 1,
+        doctor_id: servey.info_doctors.id,
+    };
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `${v.API_baseurl}/server/get_appointment`,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data : localDataset
+    };
+    console.log('From walkingForFreeSlotTimeFromAPI config: ', config)
+    // 'API accepts JSON.answer with array slots time'
+
+    return await axios.request(config).then((response) => {
+        console.log('From walkingForFreeSlotTimeFromAPI response: ', response.data)
+        // Перезапишит есть ли расписание на дату или нет
+        if(response.data.answer === 'no date'){
+            v.isDate = false
+        } else {
+            v.isDate = true
+            v.servey.schedule = response.data.answer
+        }
+    }).catch((ERROR) => {
+        v.is_error = true
+        console.log("ERROR walkingForFreeSlotTimeFromAPI: ", ERROR);
+        return null
+    })
 }
 
-// inspection(инспекция) essence
-// print error...
-// if(essence === undefined){
-//     v.servey.haveSpecialty = false
-//     console.log('Empty medicalSpecialty essence...')
-//     finish()
-//     return
-// }
-
-// collect stuff for config
-let localDataset = {
-    spec: essence.NormalPhrase, // ToDo check
-}
-
-// let config = {
-//     method: 'post',
-//     maxBodyLength: Infinity,
-//     url: `${v.API_baseurl}/server/check_spec`,
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-//     data: localDataset
-// };
-// console.log('config for medicalSpecialty: ', config)
-
-
-// axios.request(config).then((response) => {
-//     console.log('response check_spec: ', response.data)
-
-// servey.haveSpec =  response.data.haveSpec
-servey.haveSpec = api.haveSpec
-// v.servey.info_doctors =
-console.log('info_have doctor v.servey.haveDoc: ', servey.haveSpec)
-
-// }).catch((error) => {
-//     v.is_error = true
-//     console.log("ERROR: ", error);
-// }).finally(finish)
+await startSearch().catch((error) => {
+    v.is_error = true
+    console.log("ERROR block расширинный поиск даты со свободными слотами: ", error);
+}).finally(finish)
