@@ -1,5 +1,6 @@
 const server = require("../routes/router");
 const sql = require("../interactions_BD");
+const format = require("../inside_methods/format");
 
 let response = {
     msg: '',
@@ -13,7 +14,7 @@ exports.add_doctors = async function (req, res){
         res.json('Err body')
         return
     }
-    const name = req.body.name;
+    const name = format.fullName(req.body.name);
     const spec = req.body.spec;
     const price = req.body.price;
 

@@ -46,15 +46,36 @@ const api = {
 }
 const client = require("../database");
 const { PrismaClient } = require('@prisma/client');
+const axios = require('axios');
 
 let response = {
     msg: '',
     status: true
 }
 
+async function resultBulkAPI(lstUniqueID){
+    axios.post('https://go.robotmia.ru/api/calltask/result-bulk', {
+        api_key: "8144aaad-8e24-409d-9e28-088885b9e999",
+        project_id: "353",
+        call_task_ids: lstUniqueID
+
+    }).then(function (response) {
+        console.log("Return response resultBulkAPI() from watchDog.js", response);
+        return response
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
 exports.protocol =  async function () {
     console.log('WATCHDOG start...')
     try {
+        const lstUniqueID = await  client.get_collection_('calls', [
+            {status_id: 2}, {}
+        ])
+
+        const api = await resultBulkAPI(lstUniqueID)
         const body_data_api = api.data //outside information
         const lst_calls = await client.get_collection_('calls', [
             {status_id: 2},

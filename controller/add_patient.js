@@ -23,7 +23,7 @@ exports.add_patient = async function (req, res) {
         return
     }
     let tmpObj = {}
-    tmpObj.name = req.body.name;
+    tmpObj.name = format.fullName(req.body.name);
     tmpObj.phone = format.phone(req.body.phone);
     tmpObj.email = req.body.email;
     tmpObj.gender = req.body.gender;
